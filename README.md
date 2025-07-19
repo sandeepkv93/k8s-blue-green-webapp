@@ -14,27 +14,38 @@ This project demonstrates zero-downtime deployments using the blue-green deploym
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Load Balancer / Ingress                      │
-└─────────────────────┬───────────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                 Active Service Selector                         │
-│           (Points to Blue OR Green environment)                 │
-└─────────────────────┬───────────────────────────────────────────┘
-                      │
-        ┌─────────────┴─────────────┐
-        ▼                           ▼
-┌─────────────────┐         ┌─────────────────┐
-│ BLUE Environment│         │GREEN Environment│
-│   (v1.0.0)      │         │   (v1.1.0)      │
-│                 │         │                 │
-│ Frontend Pods   │         │ Frontend Pods   │
-│ Backend Pods    │         │ Backend Pods    │
-│ Database        │         │ Database        │
-└─────────────────┘         └─────────────────┘
+```mermaid
+graph TB
+    LB[Load Balancer / Ingress]
+    AS[Active Service Selector<br/>Points to Blue OR Green environment]
+    
+    subgraph Blue Environment
+        BF[Frontend Pods<br/>v1.0.0]
+        BB[Backend Pods<br/>v1.0.0]
+        BDB[(Database)]
+    end
+    
+    subgraph Green Environment
+        GF[Frontend Pods<br/>v1.1.0]
+        GB[Backend Pods<br/>v1.1.0]
+        GDB[(Database)]
+    end
+    
+    LB --> AS
+    AS -.->|environment=blue| BF
+    AS -.->|environment=blue| BB
+    AS -.->|environment=green| GF
+    AS -.->|environment=green| GB
+    
+    BB --> BDB
+    GB --> GDB
+    
+    style LB fill:#f9a825,stroke:#333,stroke-width:2px
+    style AS fill:#1976d2,stroke:#333,stroke-width:2px
+    style BF fill:#42a5f5,stroke:#333,stroke-width:2px
+    style BB fill:#42a5f5,stroke:#333,stroke-width:2px
+    style GF fill:#66bb6a,stroke:#333,stroke-width:2px
+    style GB fill:#66bb6a,stroke:#333,stroke-width:2px
 ```
 
 ## How Blue-Green Deployment Works Here
