@@ -1,0 +1,40 @@
+# Direct service for blue environment (for testing)
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-blue-service
+  namespace: blue-green-webapp
+  labels:
+    app: backend
+    environment: blue
+    component: backend
+spec:
+  selector:
+    app: backend
+    environment: blue
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  type: ClusterIP
+
+---
+# Direct service for blue frontend (for testing)
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-blue-service
+  namespace: blue-green-webapp
+  labels:
+    app: frontend
+    environment: blue
+    component: frontend
+spec:
+  selector:
+    app: frontend
+    environment: blue
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  type: ClusterIP

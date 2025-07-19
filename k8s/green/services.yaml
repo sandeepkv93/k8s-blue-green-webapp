@@ -1,0 +1,40 @@
+# Direct service for green environment (for testing)
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-green-service
+  namespace: blue-green-webapp
+  labels:
+    app: backend
+    environment: green
+    component: backend
+spec:
+  selector:
+    app: backend
+    environment: green
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  type: ClusterIP
+
+---
+# Direct service for green frontend (for testing)
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-green-service
+  namespace: blue-green-webapp
+  labels:
+    app: frontend
+    environment: green
+    component: frontend
+spec:
+  selector:
+    app: frontend
+    environment: green
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  type: ClusterIP

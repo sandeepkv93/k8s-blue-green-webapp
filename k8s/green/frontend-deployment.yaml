@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-green
+  namespace: blue-green-webapp
+  labels:
+    app: frontend
+    environment: green
+    component: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+      environment: green
+  template:
+    metadata:
+      labels:
+        app: frontend
+        environment: green
+        component: frontend
+        version: v1.1.0
+    spec:
+      containers:
+        - name: frontend
+          image: frontend:v1.1.0
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: REACT_APP_API_URL
+              value: 'http://backend-service:8080'
+            - name: REACT_APP_ENVIRONMENT
+              value: 'green'
+            - name: REACT_APP_VERSION
+              value: 'v1.1.0'
+          resources:
+            requests:
+              memory: '64Mi'
+              cpu: '50m'
+            limits:
+              memory: '128Mi'
+              cpu: '100m'
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 10
