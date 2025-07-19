@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: blue-green-webapp
+  labels:
+    component: database
+    shared: "true"
+spec:
+  selector:
+    app: postgres
+    component: database
+  ports:
+    - port: 5432
+      targetPort: 5432
+  clusterIP: None
